@@ -1,0 +1,107 @@
+<html>
+	<head>
+		<title>My Angular App</title>
+		<!-- Bootstrap m**f**! -->
+		<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+
+		<!-- Angular cdn m**f**! -->
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
+
+		<!-- ui-router library m**f**! -->
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
+
+		<script src="app.js"></script>
+
+		<!-- Add style to the thumbs up icon -->
+		<style> .glyphicon-thumbs-up { cursor:pointer } </style>
+	</head>
+
+	<!-- We can use mainController found in app.js within	this body tag  -->
+	<body ng-app="flapperNews">
+		<ui-view></ui-view>
+		<script type="text/ng-template" id="/home.html">
+
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3">
+					<div class="page-header">
+						<h1>Flapper News</h1>
+					</div>
+
+					<!-- Demonstrating the ng-repeat directive. This can be used to display lists. Here we are saying to use each post in the variable posts which is bound to $scope (two way binding bro) -->
+					<div ng-repeat="post in posts | orderBy: '-upvotes'">
+
+						<!-- We add a way to upvote for now we use the ^ character -->
+						<span class="glyphicon glyphicon-thumbs-up" ng-click="incrementUpvotes(post)"></span>
+						{{post.upvotes}}
+
+						<span style="font-size: 20px; margin-left: 10px;">
+							<!-- We want a way to show a link only if present. Enter the ng-hide/show directive which will hide elements when an Angular expression evaluates to true -->
+							<a ng-show="post.link" href="{{post.link}}">
+								{{post.title}}
+							</a>
+
+							<span ng-hide="post.link">
+								{{post.title}}
+							</span>
+
+							<span>
+								<a href="#/posts/{{$index}}">Comments</a>
+							</span>
+						</span>
+					</div>	
+
+					<!-- We can allow users to execute functions in the controller by using the ng-click directive -->
+
+					<!-- <button ng-click="addPost()">Post</button> -->
+
+					<!-- But lets make this a bit cooler. ng-submit allows users to click ENTER instead of the button to submit info. ng-model allows us to bind the content of the input to $scope. We can then access the content using $scope.title. Pretty cool huh? -->
+					<form ng-submit="addPost()" style="margin-top: 30px;">
+
+						<h3>Add a new post, bitch!</h3>
+
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Title" ng-model="title"></input>
+						</div>
+
+						<div class="form-group">
+							<!-- Add placeholder text and a way to add a link to post -->
+							<input type="text" class="form-control" placeholder="Link" ng-model="link"></input>
+						</div>
+						
+						<button type="submit" class="btn btn-primary">Post</button>
+					</form>
+				</div>
+			</div>
+		</script>
+
+		<script type="text/ng-template" id="/posts.html">
+			<div class="page-header">
+				<h3>
+					<a ng-show="post.link" href="{{post.link}}">
+						{{post.title}}
+					</a>
+					<span ng-hide="post.link">
+						{{post.title}}
+					</span>
+				</h3>
+			</div>
+			<div ng-repeat="comment in post.comments | orderBy: '-upvotes'">
+				<span class="glyphicon glyphicon-thumbs-up" 
+				ng-click="incrementUpvotes(comment)"></span>
+					{{comment.upvotes}} - by {{comment.author}}
+				<span style="font-size: 20px; margin-left: 10px;">
+					{{comment.body}}
+				</span>
+			</div>
+
+			<form ng-submit="addComment()" style="margin-top: 30px;">
+				<h3>Add a new comment</h3>
+
+				<div class="form-group">
+					<input type="text" class="form-control" placeholder="Comment" ng-model="body"></input>
+				</div>
+
+				<button type="submit" class="btn btn-primary">Post</button>
+			</form>
+		</script>
+	</body>	
